@@ -6,7 +6,8 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-
+//Problema de disco 5.3, essa solucao usa monitor separado conforme a secao 5.3.1 do livro
+//Maria Luiza - 552655 e Lucas Pinheiro - 553311
 const int MAX_CYLINDER = 199;
 
 class DiskScheduler {
@@ -87,7 +88,7 @@ void user_process(int id, int cyl) {
 
 int main() {
     std::vector<std::thread> users;
-    std::vector<int> requests = {55, 58, 39, 18, 90, 160, 150, 38, 184}; // sample requests
+    std::vector<int> requests = {69, 100, 420, 3, 7, 12, 13, 8, 51}; // sample requests
 
     for (int i = 0; i < requests.size(); ++i) {
         users.emplace_back(user_process, i + 1, requests[i]);
