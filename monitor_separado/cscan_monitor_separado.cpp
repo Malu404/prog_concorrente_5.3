@@ -54,7 +54,7 @@ public://aqui ficam os metodos publicos que os usuarios podem chamar para requis
             //obriga meu usuario a requisitar cilindros validos(0 a 199)
             //note que a flag so e chamada durante o acesso, mas a request ainda fica guardada para avaliacao, como voce pode ver que o [User 3] Requesting cylinder 420 e a mensagem de erro nao sao necessariamente seguidas. Concorrencia causa isso
             std::ostringstream oss;
-            oss << "Invalid cylinder request: " << cyl << " Por parte do cliente "<< id <<".Deve estar entre 0 e " << MAX_CYLINDER << ".\n";
+            oss << "Invalid cylinder request: " << cyl << " Por parte do cliente "<< id <<".O cilindro deve estar entre 0 e " << MAX_CYLINDER << ".\n";
             throw std::out_of_range(oss.str());
         }
         std::unique_lock<std::mutex> lock(mtx);

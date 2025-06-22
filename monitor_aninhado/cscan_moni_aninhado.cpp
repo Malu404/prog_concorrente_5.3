@@ -64,7 +64,7 @@ public:
             //obriga meu usuario a requisitar cilindros validos(0 a 199)
             //note que a flag so e chamada durante o acesso, mas a request ainda fica guardada para avaliacao, como voce pode ver que o [User 3] Requesting cylinder 420 e a mensagem de erro nao sao necessariamente seguidas. Concorrencia causa isso
             std::ostringstream oss;
-            oss << "Invalid cylinder request: " << cyl << " Por parte do cliente "<< id <<".Deve estar entre 0 e " << MAX_CYLINDER << ".\n";
+            oss << "Invalid cylinder request: " << cyl << " Por parte do cliente "<< id <<". O cilindro deve estar entre 0 e " << MAX_CYLINDER << ".\n";
             throw std::out_of_range(oss.str());
         }
         std::condition_variable_any cv;
@@ -112,7 +112,7 @@ int main() {
     DiskAccess access(disk);
 
     std::vector<std::thread> users;
-    std::vector<int> requests = {50, 10, 170, 3, 75, 90, 8, 110};
+    std::vector<int> requests = {50, 10, 170, 3, 75, 90, 8, 110, 9999, 420, 150, 30, 180, 200}; // Inclui cilindros inválidos para testar o tratamento de erros
 
     for (int i = 0; i < requests.size(); ++i) {
         users.emplace_back(user_process, i + 1, requests[i], std::ref(access));
