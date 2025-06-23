@@ -10,6 +10,8 @@
 const int MAX_CYLINDER = 199;
 std::mutex mtx; // Mutex pro print nao sair misturado pelos threads
 // Monitor Disk_Transfer
+//Problema de disco 5.3, essa solucao usa monitor aninhado conforme a secao 5.3.3 do livro
+//Maria Luiza - 552655 e Lucas Pinheiro - 553311
 class DiskTransfer {
 private:
     std::mutex mtx;
@@ -32,14 +34,14 @@ private:
     int position = -1;
     int c = 0, n = 1;
     DiskTransfer& disk;
-
+    //aqui é a função de espera, que adiciona o cilindro requisitado na fila de espera do cilindro atual ou do proximo cilindro
     void wait_request(int index, int cyl, std::unique_lock<std::mutex>& lock, std::condition_variable_any& cv) {
         queue[index][cyl].push_back(&cv);
         while (position != cyl)
             cv.wait(lock);
     }
 
-    void signal_next() {
+    void signal_next() {//aqui faz o sinal para o proximo cilindro na fila de espera, seguindo a ordem da fila
         if (!queue[c].empty()) {
             int next_cyl = queue[c].begin()->first;
             position = next_cyl;
@@ -88,7 +90,7 @@ public:
 };
 
 // Simulador
-void user_process(int id, int cyl, DiskAccess& access) {
+void user_process(int id, int cyl, DiskAccess& access) {//aqui simula os usuarios requisitando cilindros
     std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 1000));
     {   
         std::lock_guard<std::mutex> lock(mtx);
@@ -104,7 +106,8 @@ void user_process(int id, int cyl, DiskAccess& access) {
         std::lock_guard<std::mutex> lock(mtx);
         std::cout << "[User " << id << "] Pedido negado: " << e.what();
     }
-}
+}//infelizmente meus std::cout nao saem na ordem que eu queria, mas isso é devido a concorrencia, o que é esperado
+//nao consegui arrumar o print, que fica saindo no print a conclusao de um cilindro misturado a leitura de outro, culpa da concorrencia
 
 int main() {
     srand((unsigned)time(0));
